@@ -47,10 +47,43 @@
 	
 */
 
+var allCells = [];
 
+window.onload = startUp();
 
+function startUp(){
+   document.getElementById("puzzleTitle").innerHTML = "Puzzle 1";
 
+   document.getElementById("puzzle").innerHTML = drawHitori(hitori1Numbers, hitori1Blocks, hitori1Rating);
 
+   var puzzleButtons = document.getElementsByClassName("puzzle")
+   for(var i=0; i<puzzleButtons.length; i++){
+      puzzleButtons[i].onclick = switchPuzzle();
+   }
+
+   setupPuzzle();
+
+   document.getElementById("check").onclick = findErrors();
+   document.getElementById("solve").onclick = showSolution();
+}
+
+function switchPuzzle(e){
+   if(confirm("You will lose all of your work on the puzzle: continue?")){
+      var puzzleID = e.target.id;
+
+      document.getElementById("puzzleTitle").innerHTML = e.target.value;
+
+      switch(puzzleID){
+         case "puzzle1":
+            document.getElementById("puzzle").innerHTML = drawHitori(hitori1Numbers, hitori1Blocks, hitori1Rating)
+         case "puzzle2":
+            document.getElementById("puzzle").innerHTML = drawHitori(hitori2Numbers, hitori2Blocks, hitori2Rating)
+         case "puzzle3":
+            document.getElementById("puzzle").innerHTML = drawHitori(hitori3Numbers, hitori3Blocks, hitori3Rating)
+      }
+      setupPuzzle();
+   }
+}
 
 
 
