@@ -52,19 +52,19 @@ var allCells = [];
 window.onload = startUp();
 
 function startUp(){
+   var puzzleButtons = document.getElementsByClassName("puzzles");
    document.getElementById("puzzleTitle").innerHTML = "Puzzle 1";
 
    document.getElementById("puzzle").innerHTML = drawHitori(hitori1Numbers, hitori1Blocks, hitori1Rating);
 
-   var puzzleButtons = document.getElementsByClassName("puzzle")
    for(var i=0; i<puzzleButtons.length; i++){
-      puzzleButtons[i].onclick = switchPuzzle();
+      puzzleButtons[i].onclick = switchPuzzle;
    }
 
    setupPuzzle();
 
-   document.getElementById("check").onclick = findErrors();
-   document.getElementById("solve").onclick = showSolution();
+   document.getElementById("check").onclick = findErrors;
+   document.getElementById("solve").onclick = showSolution;
 }
 
 function switchPuzzle(e){
@@ -75,17 +75,87 @@ function switchPuzzle(e){
 
       switch(puzzleID){
          case "puzzle1":
-            document.getElementById("puzzle").innerHTML = drawHitori(hitori1Numbers, hitori1Blocks, hitori1Rating)
+            document.getElementById("puzzle").innerHTML = drawHitori(hitori1Numbers, hitori1Blocks, hitori1Rating);
+            break;
          case "puzzle2":
-            document.getElementById("puzzle").innerHTML = drawHitori(hitori2Numbers, hitori2Blocks, hitori2Rating)
+            document.getElementById("puzzle").innerHTML = drawHitori(hitori2Numbers, hitori2Blocks, hitori2Rating);
+            break;
          case "puzzle3":
-            document.getElementById("puzzle").innerHTML = drawHitori(hitori3Numbers, hitori3Blocks, hitori3Rating)
+            document.getElementById("puzzle").innerHTML = drawHitori(hitori3Numbers, hitori3Blocks, hitori3Rating);
+            break;
       }
       setupPuzzle();
    }
 }
 
+function setupPuzzle(){
+   allCells = document.querySelectorAll("table#hitoriGrid td");
 
+   for(var i=0; i<allCells.length; i++){
+      allCells[i].style.backgroundColor = "white";
+      allCells[i].style.color = "black";
+      allCells[i].style.borderRadius = "0";
+
+      allCells[i].addEventListener("mousedown", 
+         // changes the color, shape, and border radius of the cell clicked on varying for each key clicked on or not
+         function(e){
+            if(e.shiftKey){
+               e.target.style.backgroundColor = "white";
+               e.target.style.color = "black";
+               e.target.style.borderRadius = "0";
+            }
+            else if(e.altKey){
+               e.target.style.backgroundColor = "black";
+               e.target.style.color = "white";
+               e.target.style.borderRadius = "0";
+            }
+            else{
+               e.target.style.backgroundColor = "rgb(101, 101, 101)";
+               e.target.style.color = "white";
+               e.target.style.borderRadius = "50%";
+            }
+
+            e.preventDefault();
+         }
+      )
+      // when mouse hovered over it changes the mouse to a different image to targeted cell
+      allCells[i].addEventListener("mouseover", 
+         function(e){
+            if(e.shiftKey){
+               e.target.style.cursor = "url(jpf_eraser.png), alias";
+            }
+            else if(e.altKey){
+               e.target.style.cursor = "url(jpf_block.png), cell";
+            }
+            else{
+               e.target.style.cursor = "url(jpf_circle.png), pointer";
+            }
+         }
+      )
+
+      allCells[i].addEventListener("mouseup", checkSolution);
+   }
+}
+
+// it changes the font color of the black blocks to red and back to white after 1sec
+function findErrors(){
+   for(var i=0; i<allCells.length; i++){
+      if((allCells[i].className === "blocks" && allCells[i].style.backgroundColor === "rgb(101, 101, 100)")
+      ||
+      (allCells[i].className ==="circles" && allCells[i].style.backgroundColor === "black")){
+         allCells[i].style.color = "red";
+      }
+   }
+   setTimeout(
+      function(){
+         for(var i=0; i<allCells.length; i++){
+            if(allCells[i].style.color === "red"){
+               allCells[i].style.color = "white";
+            }
+         }
+      }
+   , 1000)
+}
 
 
 
